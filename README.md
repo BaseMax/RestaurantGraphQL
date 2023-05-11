@@ -398,6 +398,181 @@ Response:
 }
 ```
 
+### Get Reviews for a Restaurant
+
+Request:
+
+```graphql
+query {
+  restaurant(id: "1") {
+    name
+    reviews {
+      id
+      rating
+      comment
+      user {
+        name
+      }
+    }
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "restaurant": {
+      "name": "The Best Pizza",
+      "reviews": [
+        {
+          "id": "1",
+          "rating": 5,
+          "comment": "Delicious pizza! Highly recommended.",
+          "user": {
+            "name": "John Doe"
+          }
+        },
+        {
+          "id": "2",
+          "rating": 4,
+          "comment": "Good pizza, but could be better.",
+          "user": {
+            "name": "Jane Smith"
+          }
+        },
+        ...
+      ]
+    }
+  }
+}
+```
+
+### Add a Review for a Restaurant
+
+Request:
+
+```graphql
+mutation {
+  addReview(
+    restaurantId: "1",
+    rating: 4,
+    comment: "Great service and tasty food!"
+  ) {
+    id
+    rating
+    comment
+    user {
+      name
+    }
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "addReview": {
+      "id": "3",
+      "rating": 4,
+      "comment": "Great service and tasty food!",
+      "user": {
+        "name": "Emily Johnson"
+      }
+    }
+  }
+}
+```
+
+### Get Popular Restaurants
+
+Request:
+
+```graphql
+query {
+  popularRestaurants(limit: 5) {
+    id
+    name
+    address
+    cuisine
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "popularRestaurants": [
+      {
+        "id": "1",
+        "name": "The Best Pizza",
+        "address": "123 Main St",
+        "cuisine": "Italian",
+        "rating": 4.5
+      },
+      {
+        "id": "4",
+        "name": "Taco Fiesta",
+        "address": "789 Elm St",
+        "cuisine": "Mexican",
+        "rating": 4.3
+      },
+      ...
+    ]
+  }
+}
+```
+
+### Get Restaurants by Price Range
+
+Request:
+
+```graphql
+query {
+  restaurantsByPriceRange(minPrice: 10, maxPrice: 20) {
+    id
+    name
+    address
+    cuisine
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "restaurantsByPriceRange": [
+      {
+        "id": "1",
+        "name": "The Best Pizza",
+        "address": "123 Main St",
+        "cuisine": "Italian",
+        "rating": 4.5
+      },
+      {
+        "id": "3",
+        "name": "Sushi Express",
+        "address": "456 Cherry Blossom Ave",
+        "cuisine": "Japanese",
+        "rating": 4.8
+      },
+      ...
+    ]
+  }
+}
+```
+
+These examples showcase a range of additional features and demonstrate how you can use GraphQL queries and mutations to interact with the RestaurantGraphQL API. Feel free to customize and extend them based on your specific requirements.
+
 ## Contributing
 
 If you encounter any issues or have suggestions for improvements, please submit an issue or a pull request to the GitHub repository.
