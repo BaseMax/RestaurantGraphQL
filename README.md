@@ -19,13 +19,13 @@ To run the RestaurantGraphQL API locally, follow these steps:
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/restaurant-graphql-api.git
+git clone https://github.com/BaseMax/RestaurantGraphQL
 ```
 
 Navigate to the project directory:
 
 ```bash
-cd restaurant-graphql-api
+cd RestaurantGraphQL
 ```
 
 Install the dependencies:
