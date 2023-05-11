@@ -77,6 +77,327 @@ Receive the response from the server, containing the list of restaurants in the 
 
 For detailed documentation on the available queries, mutations, and types, refer to the API documentation or the GraphQL schema.
 
+## Examples
+
+Here are some additional examples of GraphQL queries and mutations for various features of the RestaurantGraphQL API:
+
+### Search in a City
+
+Request:
+
+```graphql
+query {
+  restaurants(city: "London") {
+    id
+    name
+    address
+    cuisine
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "restaurants": [
+      {
+        "id": "1",
+        "name": "The Best Pizza",
+        "address": "123 Main St",
+        "cuisine": "Italian",
+        "rating": 4.5
+      },
+      {
+        "id": "2",
+        "name": "Burger Joint",
+        "address": "456 Elm St",
+        "cuisine": "American",
+        "rating": 4.2
+      },
+      ...
+    ]
+  }
+}
+```
+
+### Calculate Distance
+
+Request:
+
+```graphql
+query {
+  calculateDistance(latitude: 40.7128, longitude: -74.0060) {
+    restaurant {
+      id
+      name
+      address
+      distance
+    }
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "calculateDistance": [
+      {
+        "restaurant": {
+          "id": "1",
+          "name": "The Best Pizza",
+          "address": "123 Main St",
+          "distance": 2.3
+        }
+      },
+      {
+        "restaurant": {
+          "id": "2",
+          "name": "Burger Joint",
+          "address": "456 Elm St",
+          "distance": 1.8
+        }
+      },
+      ...
+    ]
+  }
+}
+```
+
+### Retrieve Restaurant Details
+
+Request:
+
+```graphql
+query {
+  restaurant(id: "1") {
+    name
+    address
+    contact {
+      phone
+      email
+    }
+    openingHours {
+      day
+      hours
+    }
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "restaurant": {
+      "name": "The Best Pizza",
+      "address": "123 Main St",
+      "contact": {
+        "phone": "555-1234",
+        "email": "info@bestpizza.com"
+      },
+      "openingHours": [
+        {
+          "day": "Monday",
+          "hours": "11:00 AM - 9:00 PM"
+        },
+        {
+          "day": "Tuesday",
+          "hours": "11:00 AM - 9:00 PM"
+        },
+        ...
+      ]
+    }
+  }
+}
+```
+
+### Get List of Foods
+
+Request:
+
+```graphql
+query {
+  foods(restaurantId: "1") {
+    id
+    name
+    description
+    price
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "foods": [
+      {
+        "id": "1",
+        "name": "Margherita Pizza",
+        "description": "Classic cheese and tomato pizza",
+        "price": 12.99
+      },
+      {
+        "id": "2",
+        "name": "Pepperoni Pizza",
+        "description": "Pizza topped with pepperoni slices",
+        "price": 14.99
+      },
+      ...
+    ]
+  }
+}
+```
+
+### Filtering Restaurants
+
+Request:
+
+```graphql
+query {
+  restaurants(city: "Paris", cuisine: "French", priceRange: { min: 20, max: 50 }) {
+    id
+    name
+    address
+    cuisine
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "restaurants": [
+      {
+        "id": "1",
+        "name": "Le Petit Bistro",
+        "address": "789 Rue de la Paix",
+        "cuisine": "French",
+        "rating": 4.8
+      },
+      {
+        "id": "2",
+        "name": "La Brasserie",
+        "address": "456 Avenue des Champs-Élysées",
+        "cuisine": "French",
+        "rating": 4.5
+      },
+      ...
+    ]
+  }
+}
+```
+
+### Create a Restaurant
+
+Request:
+
+```graphql
+mutation {
+  createRestaurant(
+    name: "Sushi Express",
+    address: "123 Sakura St",
+    city: "Tokyo",
+    cuisine: "Japanese",
+    rating: 4.6
+  ) {
+    id
+    name
+    address
+    cuisine
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "createRestaurant": {
+      "id": "3",
+      "name": "Sushi Express",
+      "address": "123 Sakura St",
+      "cuisine": "Japanese",
+      "rating": 4.6
+    }
+  }
+}
+```
+
+### Update Restaurant Details
+
+Request:
+
+```graphql
+mutation {
+  updateRestaurant(
+    id: "3",
+    address: "456 Cherry Blossom Ave",
+    rating: 4.8
+  ) {
+    id
+    name
+    address
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "updateRestaurant": {
+      "id": "3",
+      "name": "Sushi Express",
+      "address": "456 Cherry Blossom Ave",
+      "rating": 4.8
+    }
+  }
+}
+```
+
+### Delete a Restaurant
+
+Request:
+
+```graphql
+mutation {
+  deleteRestaurant(id: "3") {
+    id
+    name
+    address
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "deleteRestaurant": {
+      "id": "3",
+      "name": "Sushi Express",
+      "address": "456 Cherry Blossom Ave"
+    }
+  }
+}
+```
+
 ## Contributing
 
 If you encounter any issues or have suggestions for improvements, please submit an issue or a pull request to the GitHub repository.
