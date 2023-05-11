@@ -571,6 +571,197 @@ Response:
 }
 ```
 
+### Get Restaurants by Cuisine Type
+
+Request:
+
+```graphql
+query {
+  restaurantsByCuisine(cuisine: "Chinese") {
+    id
+    name
+    address
+    cuisine
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "restaurantsByCuisine": [
+      {
+        "id": "1",
+        "name": "Taste of China",
+        "address": "123 Main St",
+        "cuisine": "Chinese",
+        "rating": 4.5
+      },
+      {
+        "id": "2",
+        "name": "Dragon Palace",
+        "address": "456 Elm St",
+        "cuisine": "Chinese",
+        "rating": 4.2
+      },
+      ...
+    ]
+  }
+}
+```
+
+### Search Restaurants by Name
+
+Request:
+
+```graphql
+query {
+  searchRestaurantsByName(name: "Pizza") {
+    id
+    name
+    address
+    cuisine
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "searchRestaurantsByName": [
+      {
+        "id": "1",
+        "name": "The Best Pizza",
+        "address": "123 Main St",
+        "cuisine": "Italian",
+        "rating": 4.5
+      },
+      {
+        "id": "5",
+        "name": "Pizza Hut",
+        "address": "789 Elm St",
+        "cuisine": "Italian",
+        "rating": 4.0
+      },
+      ...
+    ]
+  }
+}
+```
+
+### Get Nearby Restaurants
+
+Request:
+
+```graphql
+query {
+  nearbyRestaurants(latitude: 40.7128, longitude: -74.0060, radius: 5) {
+    id
+    name
+    address
+    cuisine
+    rating
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "nearbyRestaurants": [
+      {
+        "id": "1",
+        "name": "The Best Pizza",
+        "address": "123 Main St",
+        "cuisine": "Italian",
+        "rating": 4.5
+      },
+      {
+        "id": "3",
+        "name": "Sushi Express",
+        "address": "456 Cherry Blossom Ave",
+        "cuisine": "Japanese",
+        "rating": 4.8
+      },
+      ...
+    ]
+  }
+}
+```
+
+### Create a Food Item
+
+Request:
+
+```graphql
+mutation {
+  createFood(
+    restaurantId: "1",
+    name: "Cheeseburger",
+    description: "Juicy beef patty with melted cheese",
+    price: 9.99
+  ) {
+    id
+    name
+    description
+    price
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "createFood": {
+      "id": "6",
+      "name": "Cheeseburger",
+      "description": "Juicy beef patty with melted cheese",
+      "price": 9.99
+    }
+  }
+}
+```
+
+### Update a Food Item
+
+Request:
+
+```graphql
+mutation {
+  updateFood(
+    id: "6",
+    name: "Classic Cheeseburger",
+    description: "Juicy beef patty with American cheese",
+    price: 10.99
+  ) {
+    id
+    name
+    description
+    price
+  }
+}
+```
+
+Response:
+
+```json
+{
+    ...
+}
+```
+
+
+
 These examples showcase a range of additional features and demonstrate how you can use GraphQL queries and mutations to interact with the RestaurantGraphQL API. Feel free to customize and extend them based on your specific requirements.
 
 ## Contributing
