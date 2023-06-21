@@ -760,8 +760,6 @@ Response:
 }
 ```
 
-
-
 These examples showcase a range of additional features and demonstrate how you can use GraphQL queries and mutations to interact with the RestaurantGraphQL API. Feel free to customize and extend them based on your specific requirements.
 
 ## Contributing
@@ -771,3 +769,5 @@ If you encounter any issues or have suggestions for improvements, please submit 
 ## License
 
 The RestaurantGraphQL API is open-source and released under the GPL-V3.0 License. Feel free to use, modify, and distribute the code as per the terms of the license.
+
+Copyright 2023, Max Base
