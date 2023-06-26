@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateRestaurantInput } from './dto/create-restaurant.input';
 import { UpdateRestaurantInput } from './dto/update-restaurant.input';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Collection, Connection, Model } from 'mongoose';
 import { LocationType, Restaurant } from './entities/entity.restaurant';
 import { RestaurantDocument } from './entities/model.restaurant';
 import { ObjectId } from 'mongodb';
@@ -14,6 +14,8 @@ export class RestaurantService {
   constructor(
     @InjectModel(Restaurant.name)
     private restaurantModel: Model<RestaurantDocument>,
+    @InjectConnection()
+    private connection: Connection,
   ) {}
 
   async create(createRestaurantInput: CreateRestaurantInput) {
@@ -44,7 +46,6 @@ export class RestaurantService {
     const restaurant = await this.restaurantModel.findOne({
       _id: new ObjectId(id),
     });
-    console.log(restaurant);
 
     if (!restaurant)
       throw new HttpException(
@@ -104,5 +105,32 @@ export class RestaurantService {
     });
   }
 
-  async search(input: QuerySearchInput) {}
+  async search(input: QuerySearchInput) {
+    const collection =  this.connection.db.collection('restaurants');
+
+    const queries: any[] = [];
+
+    if (input.name) {
+      queries.push({ name: input.name });
+    }
+
+    if (input.city) {
+      queries.push({ city: input.city });
+    }
+
+    if (input.food) {
+      queries.push({ 'foods.name': input.food });
+    }
+
+    if (input.rating) {
+      queries.push({ rating: { $gt: 0 } });
+    }
+
+    const result = await collection
+      .find({
+        $and: queries,
+      })
+      .toArray();
+    return result;
+  }
 }
