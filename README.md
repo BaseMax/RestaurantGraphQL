@@ -10,7 +10,7 @@ The RestaurantGraphQL API offers the following features:
 - Distance calculation: The API can calculate the distance between a given location and all the restaurants, enabling users to find the nearest restaurant.
 - Retrieve restaurant details: Users can retrieve detailed information about a specific restaurant, including its name, address, contact details, opening hours, and more.
 - Get a list of foods: The API allows users to fetch a list of foods offered by a restaurant, including their names, descriptions, prices, and any other relevant details.
-- Filtering: Users can apply various filters while searching for restaurants, such as cuisine type, price range, ratings, and more.
+- Filtering: Users can apply various filters while searching for restaurants, such as food  , price range, ratings, and more.
 
 ## Installation
 
@@ -23,6 +23,10 @@ git clone https://github.com/BaseMax/RestaurantGraphQL
 ```
 
 Navigate to the project directory:
+
+
+
+
 
 ```bash
 cd RestaurantGraphQL

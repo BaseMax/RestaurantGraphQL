@@ -1,0 +1,98 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type LocationType {
+  longitude: Float!
+  latitude: Float!
+}
+
+type Contact {
+  email: String
+  phone: String
+}
+
+type OpeningHour {
+  day: Weekday
+  hours: String!
+}
+
+enum Weekday {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+type Food {
+  description: String
+  price: Int!
+  name: String!
+}
+
+type Restaurant {
+  _id: String!
+  name: String!
+  distance: Int
+  location: LocationType!
+  address: String!
+  city: String
+  rating: Float!
+  foods: [Food!]!
+  contact: Contact
+  openingHours: [OpeningHour!]
+}
+
+type Query {
+  searchQuery(querySearch: QuerySearchInput!): [Restaurant!]!
+  getRestaurantWithDistance(locationInput: LocationInput!): [Restaurant!]!
+  restaurants: [Restaurant!]!
+  restaurantById(id: String!): Restaurant!
+  restaurantByCity(city: String!): [Restaurant!]!
+}
+
+input QuerySearchInput {
+  name: String
+  food: String
+  city: String
+  rating: Int
+}
+
+input LocationInput {
+  longitude: Float!
+  latitude: Float!
+}
+
+type Mutation {
+  createRestaurant(createRestaurantInput: CreateRestaurantInput!): Restaurant!
+}
+
+input CreateRestaurantInput {
+  name: String!
+  city: String!
+  location: LocationInput!
+  address: String!
+  rating: Float!
+  foods: [FoodInput!]!
+  contact: ContactInput
+  openingHours: [OpeningHourInput!]
+}
+
+input FoodInput {
+  description: String
+  price: Int!
+  name: String!
+}
+
+input ContactInput {
+  email: String
+  phone: String
+}
+
+input OpeningHourInput {
+  day: Weekday!
+  hours: String!
+}
