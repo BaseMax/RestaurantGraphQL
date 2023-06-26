@@ -10,7 +10,7 @@ The RestaurantGraphQL API offers the following features:
 - Distance calculation: The API can calculate the distance between a given location and all the restaurants, enabling users to find the nearest restaurant.
 - Retrieve restaurant details: Users can retrieve detailed information about a specific restaurant, including its name, address, contact details, opening hours, and more.
 - Get a list of foods: The API allows users to fetch a list of foods offered by a restaurant, including their names, descriptions, prices, and any other relevant details.
-- Filtering: Users can apply various filters while searching for restaurants, such as food  , price range, ratings, and more.
+- Filtering: Users can apply various filters while searching for restaurants, such as food , price range, ratings, and more.
 
 ## Installation
 
@@ -23,10 +23,6 @@ git clone https://github.com/BaseMax/RestaurantGraphQL
 ```
 
 Navigate to the project directory:
-
-
-
-
 
 ```bash
 cd RestaurantGraphQL
@@ -64,13 +60,19 @@ Content-Type: application/json
 Send a GraphQL query as the request payload. Here's an example query to search for restaurants in a city:
 
 ```graphql
-query {
-  restaurants(city: "New York") {
-    id
+query RestaurantByCity($city: String!) {
+  restaurantByCity(city: $city) {
     name
-    address
-    cuisine
-    rating
+    _id
+    location {
+      latitude
+      longitude
+    }
+    foods {
+      price
+      name
+      description
+    }
   }
 }
 ```
@@ -90,15 +92,30 @@ Here are some additional examples of GraphQL queries and mutations for various f
 Request:
 
 ```graphql
-query {
-  restaurants(city: "London") {
-    id
+query RestaurantByCity($city: String!) {
+  restaurantByCity(city: $city) {
     name
-    address
-    cuisine
-    rating
+    _id
+    location {
+      latitude
+      longitude
+    }
+    foods {
+      price
+      name
+      description
+    }
   }
 }
+```
+
+Body :
+
+```graphql
+{
+  "city": london
+}
+
 ```
 
 Response:
@@ -106,22 +123,37 @@ Response:
 ```json
 {
   "data": {
-    "restaurants": [
+    "restaurantByCity": [
       {
-        "id": "1",
-        "name": "The Best Pizza",
-        "address": "123 Main St",
-        "cuisine": "Italian",
-        "rating": 4.5
-      },
-      {
-        "id": "2",
-        "name": "Burger Joint",
-        "address": "456 Elm St",
-        "cuisine": "American",
-        "rating": 4.2
-      },
-      ...
+        "name": "kababi",
+        "_id": "649a14c72763b1002ad672c5",
+        "location": {
+          "latitude": -0.1379,
+          "longitude": 51.5874
+        },
+        "foods": [
+          {
+            "price": 2000,
+            "name": "kabab",
+            "description": null
+          },
+          {
+            "price": 200,
+            "name": "mast",
+            "description": null
+          },
+          {
+            "price": 1000,
+            "name": "gosht",
+            "description": null
+          },
+          {
+            "price": 3000,
+            "name": "ghorme",
+            "description": null
+          }
+        ]
+      }
     ]
   }
 }
@@ -132,14 +164,25 @@ Response:
 Request:
 
 ```graphql
-query {
-  calculateDistance(latitude: 40.7128, longitude: -74.0060) {
-    restaurant {
-      id
-      name
-      address
-      distance
+query GetRestaurantWithDistance($locationInput: LocationInput!) {
+  getRestaurantWithDistance(locationInput: $locationInput) {
+    _id
+    name
+    location {
+      longitude
+      latitude
     }
+  }
+}
+```
+
+Body :
+
+```json
+{
+  "locationInput": {
+    "latitude": -0.1379,
+    "longitude": 51.5874
   }
 }
 ```
@@ -149,24 +192,15 @@ Response:
 ```json
 {
   "data": {
-    "calculateDistance": [
+    "getRestaurantWithDistance": [
       {
-        "restaurant": {
-          "id": "1",
-          "name": "The Best Pizza",
-          "address": "123 Main St",
-          "distance": 2.3
+        "_id": "649a14c72763b1002ad672c5",
+        "name": "kababi",
+        "location": {
+          "longitude": 51.5874,
+          "latitude": -0.1379
         }
-      },
-      {
-        "restaurant": {
-          "id": "2",
-          "name": "Burger Joint",
-          "address": "456 Elm St",
-          "distance": 1.8
-        }
-      },
-      ...
+      }
     ]
   }
 }
@@ -177,19 +211,25 @@ Response:
 Request:
 
 ```graphql
-query {
-  restaurant(id: "1") {
+query RestaurantById($restaurantByIdId: String!) {
+  restaurantById(id: $restaurantByIdId) {
     name
     address
-    contact {
-      phone
-      email
-    }
-    openingHours {
-      day
-      hours
+    city
+    foods {
+      price
+      description
+      name
     }
   }
+}
+```
+
+Body :
+
+```json
+{
+  "restaurantByIdId": "649a14c72763b1002ad672c5"
 }
 ```
 
@@ -198,23 +238,31 @@ Response:
 ```json
 {
   "data": {
-    "restaurant": {
-      "name": "The Best Pizza",
-      "address": "123 Main St",
-      "contact": {
-        "phone": "555-1234",
-        "email": "info@bestpizza.com"
-      },
-      "openingHours": [
+    "restaurantById": {
+      "name": "kababi",
+      "address": "1 London Bridge St, London SE1 9BG",
+      "city": "london",
+      "foods": [
         {
-          "day": "Monday",
-          "hours": "11:00 AM - 9:00 PM"
+          "price": 2000,
+          "description": null,
+          "name": "kabab"
         },
         {
-          "day": "Tuesday",
-          "hours": "11:00 AM - 9:00 PM"
+          "price": 200,
+          "description": null,
+          "name": "mast"
         },
-        ...
+        {
+          "price": 1000,
+          "description": null,
+          "name": "gosht"
+        },
+        {
+          "price": 3000,
+          "description": null,
+          "name": "ghorme"
+        }
       ]
     }
   }
@@ -226,13 +274,22 @@ Response:
 Request:
 
 ```graphql
-query {
-  foods(restaurantId: "1") {
-    id
-    name
-    description
-    price
+query RestaurantById($restaurantByIdId: String!) {
+  restaurantById(id: $restaurantByIdId) {
+    foods {
+      price
+      name
+      description
+    }
   }
+}
+```
+
+Body :
+
+```json
+{
+  "restaurantByIdId": "649a14c72763b1002ad672c5"
 }
 ```
 
@@ -241,21 +298,30 @@ Response:
 ```json
 {
   "data": {
-    "foods": [
-      {
-        "id": "1",
-        "name": "Margherita Pizza",
-        "description": "Classic cheese and tomato pizza",
-        "price": 12.99
-      },
-      {
-        "id": "2",
-        "name": "Pepperoni Pizza",
-        "description": "Pizza topped with pepperoni slices",
-        "price": 14.99
-      },
-      ...
-    ]
+    "restaurantById": {
+      "foods": [
+        {
+          "price": 2000,
+          "name": "kabab",
+          "description": null
+        },
+        {
+          "price": 200,
+          "name": "mast",
+          "description": null
+        },
+        {
+          "price": 1000,
+          "name": "gosht",
+          "description": null
+        },
+        {
+          "price": 3000,
+          "name": "ghorme",
+          "description": null
+        }
+      ]
+    }
   }
 }
 ```
@@ -265,13 +331,28 @@ Response:
 Request:
 
 ```graphql
-query {
-  restaurants(city: "Paris", cuisine: "French", priceRange: { min: 20, max: 50 }) {
-    id
+query SearchQuery($querySearch: QuerySearchInput!) {
+  searchQuery(querySearch: $querySearch) {
     name
     address
-    cuisine
     rating
+    foods {
+      price
+      description
+      name
+    }
+  }
+}
+```
+
+Body :
+
+```json
+{
+  "querySearch": {
+    "rating": 3,
+    "food": "kabab",
+    "name": "kakabi"
   }
 }
 ```
@@ -281,23 +362,7 @@ Response:
 ```json
 {
   "data": {
-    "restaurants": [
-      {
-        "id": "1",
-        "name": "Le Petit Bistro",
-        "address": "789 Rue de la Paix",
-        "cuisine": "French",
-        "rating": 4.8
-      },
-      {
-        "id": "2",
-        "name": "La Brasserie",
-        "address": "456 Avenue des Champs-Élysées",
-        "cuisine": "French",
-        "rating": 4.5
-      },
-      ...
-    ]
+    "searchQuery": []
   }
 }
 ```
@@ -307,19 +372,65 @@ Response:
 Request:
 
 ```graphql
-mutation {
-  createRestaurant(
-    name: "Sushi Express",
-    address: "123 Sakura St",
-    city: "Tokyo",
-    cuisine: "Japanese",
-    rating: 4.6
-  ) {
-    id
-    name
+mutation CreateRestaurant($createRestaurantInput: CreateRestaurantInput!) {
+  createRestaurant(createRestaurantInput: $createRestaurantInput) {
     address
-    cuisine
+    contact {
+      email
+      phone
+    }
+    location {
+      latitude
+      longitude
+    }
+    name
+    openingHours {
+      day
+      hours
+    }
     rating
+    city
+    foods {
+      name
+    }
+    _id
+  }
+}
+```
+
+Body :
+
+```json
+{
+  "createRestaurantInput": {
+    "name": "kababi",
+    "city": "london",
+    "foods": [
+      { "name": "kabab", "price": 2000 },
+      { "name": "mast", "price": 200 },
+      { "name": "gosht", "price": 1000 },
+      { "name": "ghorme", "price": 3000 }
+    ],
+    "contact": {
+      "email": "kababigmail.com",
+      "phone": "989211828382"
+    },
+    "location": {
+      "latitude": -0.1379,
+      "longitude": 51.5874
+    },
+    "address": "1 London Bridge St, London SE1 9BG",
+    "rating": 4,
+
+    "openingHours": [
+      { "day": "Monday", "hours": "10:00-22:00" },
+      { "day": "Tuesday", "hours": "10:00-22:00" },
+      { "day": "Wednesday", "hours": "10:00-22:00" },
+      { "day": "Thursday", "hours": "10:00-22:00" },
+      { "day": "Friday", "hours": "10:00-23:00" },
+      { "day": "Saturday", "hours": "11:00-23:00" },
+      { "day": "Sunday", "hours": "11:00-22:00" }
+    ]
   }
 }
 ```
@@ -330,204 +441,130 @@ Response:
 {
   "data": {
     "createRestaurant": {
-      "id": "3",
-      "name": "Sushi Express",
-      "address": "123 Sakura St",
-      "cuisine": "Japanese",
-      "rating": 4.6
+      "address": "1 London Bridge St, London SE1 9BG",
+      "contact": {
+        "email": "kababigmail.com",
+        "phone": "989211828382"
+      },
+      "location": {
+        "latitude": -0.1379,
+        "longitude": 51.5874
+      },
+      "name": "kababi",
+      "openingHours": [
+        {
+          "day": "Monday",
+          "hours": "10:00-22:00"
+        },
+        {
+          "day": "Tuesday",
+          "hours": "10:00-22:00"
+        },
+        {
+          "day": "Wednesday",
+          "hours": "10:00-22:00"
+        },
+        {
+          "day": "Thursday",
+          "hours": "10:00-22:00"
+        },
+        {
+          "day": "Friday",
+          "hours": "10:00-23:00"
+        },
+        {
+          "day": "Saturday",
+          "hours": "11:00-23:00"
+        },
+        {
+          "day": "Sunday",
+          "hours": "11:00-22:00"
+        }
+      ],
+      "rating": 4,
+      "city": "london",
+      "foods": [
+        {
+          "name": "kabab"
+        },
+        {
+          "name": "mast"
+        },
+        {
+          "name": "gosht"
+        },
+        {
+          "name": "ghorme"
+        }
+      ],
+      "_id": "649a18652763b1002ad672f7"
     }
   }
 }
 ```
 
-### Update Restaurant Details
+### Get Restaurants rates greater than specified rate
 
 Request:
 
 ```graphql
-mutation {
-  updateRestaurant(
-    id: "3",
-    address: "456 Cherry Blossom Ave",
-    rating: 4.8
-  ) {
-    id
+query SearchQuery($querySearch: QuerySearchInput!) {
+  searchQuery(querySearch: $querySearch) {
     name
     address
     rating
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "updateRestaurant": {
-      "id": "3",
-      "name": "Sushi Express",
-      "address": "456 Cherry Blossom Ave",
-      "rating": 4.8
-    }
-  }
-}
-```
-
-### Delete a Restaurant
-
-Request:
-
-```graphql
-mutation {
-  deleteRestaurant(id: "3") {
-    id
-    name
-    address
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "deleteRestaurant": {
-      "id": "3",
-      "name": "Sushi Express",
-      "address": "456 Cherry Blossom Ave"
-    }
-  }
-}
-```
-
-### Get Reviews for a Restaurant
-
-Request:
-
-```graphql
-query {
-  restaurant(id: "1") {
-    name
-    reviews {
-      id
-      rating
-      comment
-      user {
-        name
-      }
-    }
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "restaurant": {
-      "name": "The Best Pizza",
-      "reviews": [
-        {
-          "id": "1",
-          "rating": 5,
-          "comment": "Delicious pizza! Highly recommended.",
-          "user": {
-            "name": "John Doe"
-          }
-        },
-        {
-          "id": "2",
-          "rating": 4,
-          "comment": "Good pizza, but could be better.",
-          "user": {
-            "name": "Jane Smith"
-          }
-        },
-        ...
-      ]
-    }
-  }
-}
-```
-
-### Add a Review for a Restaurant
-
-Request:
-
-```graphql
-mutation {
-  addReview(
-    restaurantId: "1",
-    rating: 4,
-    comment: "Great service and tasty food!"
-  ) {
-    id
-    rating
-    comment
-    user {
+    foods {
+      price
+      description
       name
     }
   }
 }
 ```
 
+Body :
+
+```json
+{
+  "querySearch": {
+    "rating": 3
+  }
+}
+```
+
 Response:
 
 ```json
 {
   "data": {
-    "addReview": {
-      "id": "3",
-      "rating": 4,
-      "comment": "Great service and tasty food!",
-      "user": {
-        "name": "Emily Johnson"
+    "searchQuery": [
+      {
+        "name": "kababi",
+        "address": "1 London Bridge St, London SE1 9BG",
+        "rating": 4,
+        "foods": [
+          {
+            "price": 2000,
+            "description": null,
+            "name": "kabab"
+          },
+          {
+            "price": 200,
+            "description": null,
+            "name": "mast"
+          },
+          {
+            "price": 1000,
+            "description": null,
+            "name": "gosht"
+          },
+          {
+            "price": 3000,
+            "description": null,
+            "name": "ghorme"
+          }
+        ]
       }
-    }
-  }
-}
-```
-
-### Get Popular Restaurants
-
-Request:
-
-```graphql
-query {
-  popularRestaurants(limit: 5) {
-    id
-    name
-    address
-    cuisine
-    rating
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "popularRestaurants": [
-      {
-        "id": "1",
-        "name": "The Best Pizza",
-        "address": "123 Main St",
-        "cuisine": "Italian",
-        "rating": 4.5
-      },
-      {
-        "id": "4",
-        "name": "Taco Fiesta",
-        "address": "789 Elm St",
-        "cuisine": "Mexican",
-        "rating": 4.3
-      },
-      ...
     ]
   }
 }
@@ -575,18 +612,31 @@ Response:
 }
 ```
 
-### Get Restaurants by Cuisine Type
+### Get Restaurants by food
 
 Request:
 
 ```graphql
-query {
-  restaurantsByCuisine(cuisine: "Chinese") {
-    id
+query SearchQuery($querySearch: QuerySearchInput!) {
+  searchQuery(querySearch: $querySearch) {
     name
     address
-    cuisine
     rating
+    foods {
+      price
+      description
+      name
+    }
+  }
+}
+```
+
+Body :
+
+```json
+{
+  "querySearch": {
+    "food": "kabab"
   }
 }
 ```
@@ -596,22 +646,34 @@ Response:
 ```json
 {
   "data": {
-    "restaurantsByCuisine": [
+    "searchQuery": [
       {
-        "id": "1",
-        "name": "Taste of China",
-        "address": "123 Main St",
-        "cuisine": "Chinese",
-        "rating": 4.5
-      },
-      {
-        "id": "2",
-        "name": "Dragon Palace",
-        "address": "456 Elm St",
-        "cuisine": "Chinese",
-        "rating": 4.2
-      },
-      ...
+        "name": "kababi",
+        "address": "1 London Bridge St, London SE1 9BG",
+        "rating": 4,
+        "foods": [
+          {
+            "price": 2000,
+            "description": null,
+            "name": "kabab"
+          },
+          {
+            "price": 200,
+            "description": null,
+            "name": "mast"
+          },
+          {
+            "price": 1000,
+            "description": null,
+            "name": "gosht"
+          },
+          {
+            "price": 3000,
+            "description": null,
+            "name": "ghorme"
+          }
+        ]
+      }
     ]
   }
 }
@@ -622,136 +684,25 @@ Response:
 Request:
 
 ```graphql
-query {
-  searchRestaurantsByName(name: "Pizza") {
-    id
+query SearchQuery($querySearch: QuerySearchInput!) {
+  searchQuery(querySearch: $querySearch) {
     name
     address
-    cuisine
     rating
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "searchRestaurantsByName": [
-      {
-        "id": "1",
-        "name": "The Best Pizza",
-        "address": "123 Main St",
-        "cuisine": "Italian",
-        "rating": 4.5
-      },
-      {
-        "id": "5",
-        "name": "Pizza Hut",
-        "address": "789 Elm St",
-        "cuisine": "Italian",
-        "rating": 4.0
-      },
-      ...
-    ]
-  }
-}
-```
-
-### Get Nearby Restaurants
-
-Request:
-
-```graphql
-query {
-  nearbyRestaurants(latitude: 40.7128, longitude: -74.0060, radius: 5) {
-    id
-    name
-    address
-    cuisine
-    rating
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "nearbyRestaurants": [
-      {
-        "id": "1",
-        "name": "The Best Pizza",
-        "address": "123 Main St",
-        "cuisine": "Italian",
-        "rating": 4.5
-      },
-      {
-        "id": "3",
-        "name": "Sushi Express",
-        "address": "456 Cherry Blossom Ave",
-        "cuisine": "Japanese",
-        "rating": 4.8
-      },
-      ...
-    ]
-  }
-}
-```
-
-### Create a Food Item
-
-Request:
-
-```graphql
-mutation {
-  createFood(
-    restaurantId: "1",
-    name: "Cheeseburger",
-    description: "Juicy beef patty with melted cheese",
-    price: 9.99
-  ) {
-    id
-    name
-    description
-    price
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "createFood": {
-      "id": "6",
-      "name": "Cheeseburger",
-      "description": "Juicy beef patty with melted cheese",
-      "price": 9.99
+    foods {
+      price
+      name
     }
   }
 }
 ```
 
-### Update a Food Item
+Body :
 
-Request:
-
-```graphql
-mutation {
-  updateFood(
-    id: "6",
-    name: "Classic Cheeseburger",
-    description: "Juicy beef patty with American cheese",
-    price: 10.99
-  ) {
-    id
-    name
-    description
-    price
+```json
+{
+  "querySearch": {
+    "name": "kababi"
   }
 }
 ```
@@ -760,7 +711,33 @@ Response:
 
 ```json
 {
-    ...
+  "data": {
+    "searchQuery": [
+      {
+        "name": "kababi",
+        "address": "1 London Bridge St, London SE1 9BG",
+        "rating": 4,
+        "foods": [
+          {
+            "price": 2000,
+            "name": "kabab"
+          },
+          {
+            "price": 200,
+            "name": "mast"
+          },
+          {
+            "price": 1000,
+            "name": "gosht"
+          },
+          {
+            "price": 3000,
+            "name": "ghorme"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
