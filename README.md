@@ -1,4 +1,4 @@
-# RestaurantGraphQL API
+# Restaurant GraphQL API
 
 The RestaurantGraphQL API is a GraphQL-based API designed to handle multiple restaurants in a shop store. It provides various features such as searching for restaurants in a city, finding the nearest restaurant, retrieving a list of foods offered by a restaurant, and more. This README file provides an overview of the API and instructions on how to use it.
 
@@ -113,7 +113,7 @@ Body :
 
 ```graphql
 {
-  "city": london
+  "city": "london"
 }
 
 ```
